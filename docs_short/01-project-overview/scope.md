@@ -1,4 +1,4 @@
-# Project Scope (Simplified Version)
+# Project Scope
 
 ## In Scope ✅
 
