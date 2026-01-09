@@ -116,7 +116,7 @@ Creating a backend service for game-database interaction.
 
 ### Scalability
 
-- Ability to add new agents, levels, and game mechanics without changing core architecture
+-	Supports adding agents, levels, and mechanics without core changes
 
 ### Compatibility
 | OS | Minimum Version |
