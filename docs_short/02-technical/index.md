@@ -1,12 +1,12 @@
 # 2. Technical Implementation
 
-This section covers the technical architecture, design decisions, and implementation details.
+This section outlines the technical architecture, design decisions, and implementation.
 
 ## Contents
 
-- [Tech Stack](tech-stack.md)
-- [Criteria Documentation](criteria/) - ADR for each evaluation criterion
-- [Deployment](deployment.md)
+* [Tech Stack](tech-stack.md)
+* [Criteria Documentation](criteria/) - ADRs for evaluation criteria
+* [Deployment](deployment.md)
 
 ## Solution Architecture
 
@@ -18,35 +18,24 @@ This section covers the technical architecture, design decisions, and implementa
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   ┌──────────────────┐        REST API        ┌──────────────────┐  │
-│   │                  │ ────────────────────▶  │                  │ │
-│   │   Unity Client   │                        │   Backend API    │  │
+│   │   Unity Client   │ ────────────────────▶  │   Backend API    │  │
 │   │  (Windows/macOS) │ ◀────────────────────  │ (Java Spring)    │  │
-│   │                  │        JSON Response   │                  │  │
-│   └──────────────────┘                        └──────────────────┘  │
+│   └──────────────────┘        JSON Response   └──────────────────┘  │
 │           │                                         │               │
-│           │                                         ▼               │
-│           │                              ┌─────────────────────┐    │
-│           │                              │     PostgreSQL      │    │
-│           │                              │   Remote Database   │    │
-│           │                              └─────────────────────┘    │
-│           │                                                         │
-│           ▼                                                         │
-│   ┌──────────────────────────┐                                      │
-│   │   Local Game Systems     │                                      │
-│   │                          │                                      │
-│   │ - FSM / HFSM Agents      │                                      │
-│   │ - Blackboard System      │                                      │
-│   │ - Physics Simulation     │                                      │
-│   │   (ropes, vines, water)  │                                      │
+│           ▼                                         ▼               │
+│   ┌──────────────────────────┐                 ┌──────────────┐    │
+│   │   Local Game Systems     │                 │ PostgreSQL   │    │
+│   │ - FSM / HFSM Agents      │                 │ Remote DB    │    │
+│   │ - Blackboard System      │                 └──────────────┘    │
+│   │ - Physics (ropes, vines)│                                      │
 │   │ - UI & Game Logic        │                                      │
 │   └──────────────────────────┘                                      │
 │                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
 │   │            CI / CD & Infrastructure                         │   │
-│   │                                                             │   │
-│   │  - GitHub Actions (build, tests)                            │   │
-│   │  - Docker & Docker Compose                                  │   │
-│   │  - Render (API + PostgreSQL, Free Tier)                     │   │
+│   │ - GitHub Actions (build/tests)                               │   │
+│   │ - Docker & Docker Compose                                     │   │
+│   │ - Render (API + PostgreSQL, Free Tier)                        │   │
 │   └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -54,50 +43,46 @@ This section covers the technical architecture, design decisions, and implementa
 
 ### System Components
 
-| Component | Description | Technology |
-|----------|-------------|------------|
-| **Game Client** | Unity-based 2D platformer responsible for rendering, player input handling, physics simulation, and AI agent execution | Unity Engine 2023.x |
-| **Backend API** | RESTful service handling persistent data storage, authentication, and communication between the game client and database | Java Spring Boot |
-| **Database** | Stores player progress, game state data, and related entities | PostgreSQL 15 |
-| **Hosting Platform** | Provides deployment and runtime environment for backend and database | Render (Free Tier) |
-| **CI/CD Pipeline** | Automates build, test, and deployment processes for Game API | GitHub Actions |
-
+| Component            | Description                                                                       | Technology         |
+| -------------------- | --------------------------------------------------------------------------------- | ------------------ |
+| **Game Client**      | Unity-based 2D platformer handling rendering, input, physics, AI                  | Unity 2023.x       |
+| **Backend API**      | REST service for data storage, authentication, and communication with game client | Java Spring Boot   |
+| **Database**         | Stores player progress, game state, and related entities                          | PostgreSQL 15      |
+| **Hosting Platform** | Deployment and runtime for backend & DB                                           | Render (Free Tier) |
+| **CI/CD Pipeline**   | Automates build, test, and deployment of Game API                                 | GitHub Actions     |
 
 ### Data Flow
 
 ```
-[User Action] → [Game] → [API Request] → [Backend(Game API)]
-                                                 │
-                                                 ▼
-                                          [Business Logic]
-                                                 │
-                                                 ▼
-                                          [Data Layer]
-                                                 │
-                                                 ▼
-                                          [Database]
-                                                 │
-                                                 ▼
-                                          [Response]
-                                                 │
-[UI Update] ← [Game] ← [API Response] ←─────┘
+[User Action] → [Game] → [API Request] → [Backend]
+                                          │
+                                          ▼
+                                     [Business Logic]
+                                          │
+                                          ▼
+                                      [Database]
+                                          │
+                                          ▼
+                                      [Response]
+                                          │
+[UI Update] ← [Game] ← [API Response] ←───┘
 ```
 
 ## Key Technical Decisions
 
-| Decision | Rationale | Alternatives Considered |
-|--------|-----------|------------------------|
-| Use of FSM-based autonomous agents | FSM provides predictable, maintainable, and easily extensible enemy behavior suitable for 2D platformers | Behavior Trees, hardcoded scripts |
-| Custom backend API implementation | Allows full control over data structures, avoids dependency on paid or opaque third-party solutions | Firebase, PlayFab |
-| Client–server architecture | Separates game logic from data persistence, improves scalability and maintainability | Local-only data storage, direct connection between game client and database |
-| PostgreSQL as DBMS | Reliable relational database suitable for structured game data | SQLite, NoSQL databases |
+| Decision                   | Rationale                                  | Alternatives                             |
+| -------------------------- | ------------------------------------------ | ---------------------------------------- |
+| HFSM and FSM-based agents  | Predictable, maintainable AI               | Behavior Trees, hardcoded scripts        |
+| Custom backend API         | Full control, avoids paid/opaque solutions | Firebase, PlayFab                        |
+| Client–server architecture | Separates logic & data, scalable           | Local-only storage, direct DB connection |
+| PostgreSQL                 | Reliable relational DB                     | SQLite, NoSQL                            |
 
 ## Security Overview
 
-| Aspect | Implementation |
-|------|----------------|
-| **Authentication** | Token-based authentication using JWT |
-| **Authorization** | Endpoint-level access control using a shared access token for internal game communication |
-| **Data Protection** | HTTPS for data in transit; database access restricted to backend service; passwords are hashed using bcrypt |
-| **Input Validation** | Validation of incoming API requests using Spring Boot validation mechanisms |
-| **Secrets Management** | Sensitive configuration values stored as environment variables locally in .evn and remotely in GitHub Secrets or Render environment variables |
+| Aspect                 | Implementation                                            |
+| ---------------------- | --------------------------------------------------------- |
+| **Authentication**     | JWT token-based                                           |
+| **Authorization**      | Endpoint-level access via shared token                    |
+| **Data Protection**    | HTTPS, DB access restricted, bcrypt-hashed passwords      |
+| **Input Validation**   | Spring Boot request validation                            |
+| **Secrets Management** | Env variables locally (.env) and remotely (GitHub/Render) |
