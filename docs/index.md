@@ -23,7 +23,7 @@
 
 ## Elevator Pitch
 
-This project is a cross-platform desktop game based on Unity with a graphical interface and advanced game logic, developed by a team of enterprising students. The project is aimed at developers and end users and is focused on creating a stable and scalable gaming system. The work involves the implementation of key technical modules, including autonomous game agents with different behaviours, simulation of physical processes, and interaction with a remote database via a backend API. The goal of the project is to reduce the complexity of integrating game mechanics, automated agents, and network interaction into development. A distinctive feature is the independent development of a server API and its integration with the Unity game client and a remote database, which forms an expandable technical base for further game development.
+This project is a cross-platform desktop game based on Unity with a graphical interface and advanced game logic, developed by a team of enterprising students. The project is aimed at developers and end users and is focused on creating a stable and scalable gaming system. The work involves the implementation of key technical modules, including autonomous agents implementing different decision-making and behavioural models for emergent gameplay, simulation of physical processes to expand game mechanics, and interaction with a remote database via a backend API. The goal of the project is to provide a reusable architecture for integrating AI-driven enemies, physics simulation and networked state management in Unity projects. A distinctive feature is the independent development of a server API and its integration with the Unity game client and a remote database, which forms an expandable technical base for further game development.
 
 ## Evaluation Criteria Checklist
 
@@ -47,4 +47,4 @@ This project is a cross-platform desktop game based on Unity with a graphical in
 ---
 
 *Document created: [05.01.2026]*
-*Last updated: [05.01.2026]*
+*Last updated: [09.01.2026]*
