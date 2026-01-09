@@ -52,6 +52,7 @@ The project includes multiple enemy types, each with **unique states** and behav
 ## Implementation Details
 
 ### Project Structure
+```
 Honey&Bunny/Assets/Scripts/Enemy/FSM/
 ├── BurderEnemy/
 |        ├── States/
@@ -66,6 +67,7 @@ Honey&Bunny/Assets/Scripts/Enemy/FSM/
 ├── IState.cs
 ├── StateMachine.cs
 └── Transition.cs
+```
 
 ### Key Implementation Decisions
 
