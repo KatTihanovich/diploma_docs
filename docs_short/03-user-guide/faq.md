@@ -4,71 +4,54 @@
 
 ### General
 
-**Q:** How do I start playing the game quickly?  
-**A:** Select **Guest Mode** at launch to skip registration and go directly to the main menu. Progress will not be saved in this mode.
+**Q:** How do I start quickly?
+**A:** Use **Guest Mode** to skip registration; progress won't be saved.
 
-**Q:** What platforms does the game support?  
-**A:** The game runs on Windows (desktop build) and requires Unity runtime for the client.
+**Q:** Supported platforms?
+**A:** Windows desktop; Unity runtime required.
 
-**Q:** Can I save my progress if I play as a guest?  
-**A:** No, progress and achievements are only saved for registered users.
-
----
+**Q:** Can guests save progress?
+**A:** No, only registered users.
 
 ### Account & Access
 
-**Q:** How do I create a new account?  
-**A:** Select **Register / Login** on the launch screen, choose **Create profile**, fill in your credentials, and wait for confirmation.
+**Q:** How to create an account?
+**A:** Select **Register/Login**, choose **Create profile**, fill in credentials.
 
-**Q:** I forgot my password. What should I do?  
-**A:** Currently, password recovery is not implemented. You can create a new account or use **Guest Mode** to continue playing.
+**Q:** Forgot password?
+**A:** Password recovery not implemented; create a new account or use Guest Mode.
 
-**Q:** How do I access my saved progress?  
-**A:** Log in with your registered account. Your progress, achievements, and profile data will automatically load.
-
----
+**Q:** Access saved progress?
+**A:** Log in with your account; progress and achievements load automatically.
 
 ### Features
 
-**Q:** How do I interact with objects?  
-**A:** Approach a rope and press the grab/climb key. You can climb up and down or use it to trigger objects. The rope reacts to your movement realistically.
+**Q:** How to interact with objects?
+**A:** Approach a rope and press the grab/climb key; physics reacts realistically.
 
-**Q:** How do enemies behave?  
-**A:** Enemies act autonomously using state-based logic. They can patrol, attack, idle, and have unique behaviors depending on their type.
+**Q:** How do enemies behave?
+**A:** State-based autonomous behavior (patrol, attack, idle); type-specific actions.
 
 ## Troubleshooting
 
-### Common Issues
-
-| Problem | Possible Cause | Solution |
-|---------|---------------|----------|
-| Can't register | Not unique nickname | Use another nickname |
-| Can't login | Wrong credentials | Try again or create new profile |
-| Data not saving | Network issue | Check connection |
-| Data not saving with internet on | JWT token expired | Login again |
-| Rope does not respond | Player not in range or physics glitch | Move closer to rope and retry; restart level if needed |
-| Enemy behaves incorrectly | Bug in specific level or corrupted state | Restart level; report bug if reproducible |
-| Game crashes on startup | Missing or corrupted assets | Verify game files or reinstall |
-| Audio not playing | Volume muted or audio device unavailable | Check settings and system audio |
-| Controls not responding | Focus lost or key binding conflict | Click on game window to regain focus; check controls settings |
+| Problem               | Cause                                 | Solution                                    |
+| --------------------- | ------------------------------------- | ------------------------------------------- |
+| Can't register        | Non-unique nickname                   | Use another nickname                        |
+| Can't login           | Wrong credentials                     | Retry or create new account                 |
+| Data not saving       | Network/JWT issue                     | Check connection; re-login if token expired |
+| Rope unresponsive     | Player out of range or physics glitch | Move closer; restart level                  |
+| Enemy misbehaves      | Bug or corrupted state                | Restart level; report bug                   |
+| Game crashes          | Missing/corrupt assets                | Verify or reinstall game                    |
+| Audio not playing     | Muted or device issue                 | Check system and game audio                 |
+| Controls unresponsive | Focus lost or key conflict            | Click game window; check bindings           |
 
 ## Getting Help
 
-### Contact Support
+**Contact Support:**
 
-| Channel | Response Time | Best For |
-|---------|--------------|----------|
-| honeybunny.bis@gmail.com | 6 hours/days | Any type of issues |
-| Instagram (@honeybunnygame) | In a few minutes | Any type of issues |
+| Channel                                                     | Response Time |
+| ----------------------------------------------------------- | ------------- |
+| [honeybunny.bis@gmail.com](mailto:honeybunny.bis@gmail.com) | 6 hours/days  |
+| Instagram (@honeybunnygame)                                 | Minutes       |
 
-### Reporting Bugs
-
-When reporting a bug, please include:
-
-1. **Steps to reproduce** - What actions lead to the issue?
-2. **Expected behavior** - What should happen?
-3. **Actual behavior** - What actually happens?
-4. **Screenshots** - If applicable
-5. **Browser/Device info** - Browser name, version, OS
-
-Submit bug reports at: honeybunny.bis@gmail.com
+**Reporting Bugs:** Include steps to reproduce, expected vs actual behavior, screenshots, and device info. Submit to [honeybunny.bis@gmail.com](mailto:honeybunny.bis@gmail.com)
