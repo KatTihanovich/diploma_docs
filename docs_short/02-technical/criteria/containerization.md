@@ -3,40 +3,44 @@
 ## Architecture Decision Record
 
 ### Status
-
-**Status:** Accepted 
-
+**Status:** Accepted  
 **Date:** 2026-01-06
 
 ### Context
-
-Containerization is used to provide a stable, isolated, and reproducible environment for the game backend and database, avoiding manual setup on each developer machine.
-​
-Key forces: team development, fast onboarding, minimizing environment‑related bugs, and enabling easy local startup of the entire stack.
+Containerization provides a stable, isolated, and reproducible environment for the backend and database, avoiding manual setup for developers.  
+Key goals: team development, fast onboarding, minimizing environment-related bugs, easy local startup.
 
 ### Decision
+Use **Docker and Docker Compose** to containerize:
 
-The system uses Docker and Docker Compose to containerize all core components: PostgreSQL, Flyway migrations, Postgres Exporter, and the Spring Boot backend.
-​
-The infrastructure is started with a single command, with health checks, resource limits, named volumes, and explicit dependencies.
+* PostgreSQL  
+* Flyway migrations  
+* Postgres Exporter  
+* Spring Boot backend  
+
+Infrastructure starts with a single command, includes health checks, resource limits, named volumes, and dependencies.
 
 ### Alternatives Considered
 
-| Alternative                                             | Pros                                              | Cons                                                                           | Why Not Chosen                                                                                  |
-| ------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| Local DB and backend without Docker                     | Simple, fewer abstraction layers                  | Inconsistent environments, complex onboarding, manual DB setup                 | Does not meet reproducibility and fast team setup requirements |
-| Single container with DB + backend                      | Simple deployment model, one image                | Poor isolation, hard scaling, harder independent updates                       | Violates separation of concerns and complicates maintenance   |
+| Alternative | Pros | Cons | Why Not Chosen |
+|------------|------|------|----------------|
+| Local DB + backend | Simple, fewer abstraction layers | Inconsistent environments, manual setup | Fails reproducibility and fast team setup goals |
+| Single container (DB + backend) | One image, simple deployment | Poor isolation, harder scaling, maintenance | Violates separation of concerns, harder updates |
+
+---
 
 ### Consequences
 
-**Positive:**
-- Fast, one-command startup of the entire infrastructure with an identical environment for all developers.
-- Improved maintainability due to clear separation of components into dedicated containers with well-defined roles and dependencies.
-- Built-in observability through Postgres Exporter and Spring Boot Actuator health checks for performance and resource monitoring.
+**Positive:**  
+- Fast, one-command startup for consistent environment  
+- Clear separation of components; easier maintenance  
+- Observability via Postgres Exporter and Spring Boot health checks  
 
-**Negative:**
-- Increased total image size (hundreds of megabytes for backend and database images).
-- Additional complexity when configuring Docker Compose, health checks, and resource limits.
+**Negative:**  
+- Larger image sizes  
+- Slightly more complex Docker Compose setup  
+
+---
 
 ## Implementation Details
 
@@ -56,29 +60,32 @@ game-progress-api/
 
 ### Key Implementation Decisions
 
-| Decision                                                                                | Rationale                                                                                                   |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Separate PostgreSQL, backend, Flyway, Postgres Exporter into individual containers      | Clear isolation, easier independent updates and scaling|
-| Use multi‑stage Dockerfile for backend with eclipse-temurin:21-jdk-jammy → 21-jre-jammy | Reduced image size and use of LTS Java on a stable Ubuntu base   |
-| Configure health checks and depends_on with service_healthy                             | Ensures PostgreSQL is ready before running migrations and starting backend  |
+| Decision | Rationale |
+|---------|-----------|
+| Separate containers for PostgreSQL, backend, Flyway, Postgres Exporter | Clear isolation, easier updates and scaling |
+| Multi-stage backend Dockerfile (eclipse-temurin:21-jdk-jammy → 21-jre-jammy) | Reduces image size, uses stable LTS Java |
+| Health checks + `depends_on` with `service_healthy` | Ensures DB ready before migrations and backend start |
 
 ### Diagrams
 
-![Interactions Diagram](../../assets/diagrams/diagram-of-interactions.png)
-![Diagram of the pipeline set up](../../assets/diagrams/diagram-pipeline-set-up.png)
+![Interactions Diagram](../../assets/diagrams/diagram-of-interactions.png)  
+![Pipeline Setup Diagram](../../assets/diagrams/diagram-pipeline-set-up.png)
+
+---
 
 ## Requirements Checklist
 
-| # | Requirement                                               | Status | Evidence/Notes                                                                                                                                         |
-| - | --------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1 | Containerize backend and DB in a reproducible environment | ✅      | Described PostgreSQL and backend images, configuration and resources                          |
-| 2 | Apply database migrations automatically                   | ✅      | Dedicated one‑shot Flyway container, started after PostgreSQL becomes healthy                                    |
-| 3 | Provide DB monitoring via metrics export                  | ✅      | Postgres Exporter v0.15.0 exposing Prometheus‑formatted metrics on port 9187                                     |
-| 4 | Optimize image sizes and startup time                     | ⚠️     | Multi‑stage backend and Alpine Flyway, but resulting sizes are still relatively large ​ |
+| # | Requirement | Status | Notes |
+|---|------------|--------|-------|
+| 1 | Containerize backend + DB | ✅ | Images, configuration, resources defined |
+| 2 | Apply DB migrations automatically | ✅ | Flyway container started after PostgreSQL is healthy |
+| 3 | Provide DB monitoring | ✅ | Postgres Exporter v0.15.0 exposes Prometheus metrics (port 9187) |
+| 4 | Optimize image size/startup time | ⚠️ | Multi-stage builds used, but images still relatively large |
 
+---
 
 ## Known Limitations
 
-| Limitation                                     | Impact                                                              | Potential Solution                                                                                                           |
-| ---------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Relatively large backend and Flyway images     | Longer first‑time pulls and higher disk usage                       | Further Dockerfile optimization, trimming dependencies, and considering slimmer base images |
+| Limitation | Impact | Potential Solution |
+|-----------|--------|------------------|
+| Large backend and Flyway images | Longer pulls, higher disk usage | Further optimize Dockerfile, trim dependencies, use slimmer base images |
