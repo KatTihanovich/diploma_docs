@@ -3,43 +3,52 @@
 ## Architecture Decision Record
 
 ### Status
-
-**Status:** Accepted 
-
+**Status:** Accepted  
 **Date:** 2026-01-06
 
 ### Context
+The project is a Unity-based 2D platformer with a backend API for data storage and business logic. The backend API requires automated build, testing, and deployment to improve system stability, reduce manual errors, and accelerate release cycles.  
+The Unity client is excluded from CI/CD due to platform-specific build dependencies and manual testing needs.
 
-The diploma project consists of a Unity-based platformer game with a backend API for data storage and business logic. The backend API component requires automated build, testing, and deployment processes to reduce delivery time, improve system stability, and minimize manual deployment errors. The Unity client application was excluded from CI/CD automation due to platform-specific build dependencies and manual testing requirements.
-​
 ### Decision
+Use **GitHub Actions** to implement CI/CD for the `game-progress-api` backend service.  
+Pipeline stages include:
 
-Implement a comprehensive CI/CD pipeline using GitHub Actions for the game-progress-api backend service with automated stages including build, code style checking, unit testing, integration testing, code coverage analysis, and deployment to Render cloud platform. The pipeline triggers automatically on push and pull requests to master and dev branches, with deployment occurring only on master branch after all quality gates pass.
-​
+1. Build
+2. Code style check (Checkstyle)
+3. Unit testing
+4. Integration testing
+5. Code coverage analysis (JaCoCo + SonarCloud)
+6. Deployment to Render
+
+Pipeline triggers automatically on push and pull requests to `dev` and `master` branches. Deployment occurs **only on `master`** after all quality gates pass.
+
 ### Alternatives Considered
 
-| Alternative         | Pros                                                    | Cons                                                                                       | Why Not Chosen                                                                             |
-| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| Jenkins | Full control over infrastructure, highly customizable   | Requires dedicated server maintenance, additional infrastructure costs, more complex setup | GitHub Actions provides native integration with repository without infrastructure overhead |
-| GitLab CI/CD        | Integrated DevOps platform, built-in container registry | Requires migration from GitHub, additional learning curve for team                         | Project already hosted on GitHub with established workflows                                |
-| Manual deployment   | No automation setup required, direct control            | High error rate, time-consuming, no automated quality checks, inconsistent deployments     | Automation essential for maintaining code quality and reducing deployment risks            |
+| Alternative         | Pros                                         | Cons                                        | Why Not Chosen                                  |
+|--------------------|---------------------------------------------|--------------------------------------------|------------------------------------------------|
+| Jenkins             | Full control, highly customizable          | Requires server, complex setup             | GitHub Actions integrates natively with repo  |
+| GitLab CI/CD        | Integrated DevOps, container registry       | Migration, learning curve                  | Project already on GitHub                      |
+| Manual deployment   | Direct control                               | Error-prone, time-consuming, no checks    | Automation required for stability             |
+
+---
 
 ## Consequences
 
-### Positive
-- Automated quality control through integrated Checkstyle, JaCoCo, and SonarCloud analysis
-- Reduced deployment risk by ensuring all tests pass before production release
-- Faster release cycles with automated build and deployment processes
-- Consistent environment configuration between testing and production
-- Comprehensive test coverage metrics and artifact generation for reporting
+**Positive**
+- Automated quality control: Checkstyle, JaCoCo, SonarCloud  
+- Reduced deployment risk; only passing builds reach production  
+- Faster release cycles with artifact generation  
 
-### Negative
-- CI/CD pipeline limited to backend API only, Unity client requires manual deployment
-- Dependency on GitHub Actions availability and Render platform uptime
-- Initial setup time for configuring workflows and quality gates
+**Negative**
+- CI/CD limited to backend API; Unity client requires manual deployment  
+- Depends on GitHub Actions and Render uptime  
+- Initial setup time for workflow configuration  
 
-### Neutral
-- Pipeline execution time adds delay to merge process but ensures quality
+**Neutral**
+- Pipeline execution adds delay to merge process but ensures quality
+
+---
 
 ## Implementation Details
 
@@ -52,37 +61,36 @@ game-progress-api/
 │   │   └── backend.yml
 ```
 
-### Key Implementation Decisions
+### Key Decisions
 
-| Decision                        | Rationale                                                                                                                             |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Sequential pipeline stages      | Ensures each quality gate passes before proceeding, preventing deployment of broken builds    |
-| JaCoCo + SonarCloud integration | Generates objective code coverage metrics required for project reporting and quality standards  |
-| Render Deploy Hook              | Automates deployment with health check verification to ensure service availability          |
-| Artifact preservation           | Enables post-build analysis and provides executable JAR for Docker image creation         |
+| Decision                        | Rationale                                                             |
+|---------------------------------|---------------------------------------------------------------------|
+| Sequential pipeline stages       | Ensures each quality gate passes before proceeding to next stage    |
+| JaCoCo + SonarCloud integration | Provides objective code coverage and static analysis metrics        |
+| Render Deploy Hook               | Automates deployment with health check verification                 |
+| Artifact preservation            | Saves JAR and reports for post-build analysis and Docker image build|
+
+---
 
 ## Requirements Checklist
 
-| # | Requirement               | Status | Evidence/Notes                                                                                          |
-| - | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1 | Automated build process   | ✅      | Maven compilation with JAR artifact generation CI_CD-Documentation-Tsikhanovich.docx​                   |
-| 2 | Code quality checks       | ✅      | Checkstyle for style, SonarCloud for static analysis CI_CD-Documentation-Tsikhanovich.docx​             |
-| 3 | Automated testing         | ✅      | Unit and integration test stages with H2 database CI_CD-Documentation-Tsikhanovich.docx​                |
-| 4 | Code coverage reporting   | ✅      | JaCoCo generates XML/HTML reports, integrated with SonarCloud CI_CD-Documentation-Tsikhanovich.docx​    |
-| 5 | Automated deployment      | ✅      | Render deployment with health checks on master branch CI_CD-Documentation-Tsikhanovich.docx​            |
-| 6 | Artifact management       | ✅      | JAR, test reports, and coverage reports stored in GitHub Actions CI_CD-Documentation-Tsikhanovich.docx​ |
-| 7 | Multi-environment support | ✅      | Dev (local), Test (CI), Production (Render) environments CI_CD-Documentation-Tsikhanovich.docx​         |
+| # | Requirement               | Status | Notes |
+|---|---------------------------|--------|-------|
+| 1 | Automated build           | ✅      | Maven compilation and JAR artifact |
+| 2 | Code quality checks       | ✅      | Checkstyle + SonarCloud analysis |
+| 3 | Automated testing         | ✅      | Unit & integration tests using H2 DB |
+| 4 | Code coverage reporting   | ✅      | JaCoCo XML/HTML reports integrated with SonarCloud |
+| 5 | Automated deployment      | ✅      | Render deployment with health checks on `master` branch |
+| 6 | Artifact management       | ✅      | JAR, test reports, and coverage reports stored |
+| 7 | Multi-environment support | ✅      | Dev (local), Test (CI), Production (Render) |
 
-## Justification of CI/CD Stages
+---
 
-- **Build**: Compile the project and generate executable JAR (`./mvnw clean package -DskipTests`). Ensures correct compilation and provides artifact for testing and deployment.  
+## CI/CD Stage Justification
 
-- **Code Style Check (Lint)**: Use Checkstyle (`./mvnw checkstyle:check`) to enforce Java coding standards, ensuring consistency and easier maintenance.  
-
-- **Unit Testing**: Verify individual components and business logic in isolation. Provides quick feedback and reduces regression risks.  
-
-- **Integration Testing**: Test components together in a real Spring Boot context using H2, Spring Security Test, and MockMvc. Ensures correct API, JPA, and security integration.  
-
-- **Code Coverage & Quality Analysis**: Generate JaCoCo reports and run SonarCloud analysis for duplicates, vulnerabilities, and coverage metrics. Artifacts saved for reporting.  
-
-- **Deploy**: Deploy via Render Deploy Hook after all tests pass. Automation reduces deployment risks, ensures consistency, and speeds up release.
+- **Build:** Compile project and generate executable JAR (`./mvnw clean package -DskipTests`)  
+- **Code Style Check (Lint):** Enforce Java coding standards via Checkstyle  
+- **Unit Testing:** Validate individual components and business logic  
+- **Integration Testing:** Test full API in Spring Boot context (H2 DB, MockMvc)  
+- **Coverage & Quality Analysis:** JaCoCo + SonarCloud generate coverage, detect duplicates & vulnerabilities  
+- **Deploy:** Trigger Render Deploy Hook after all stages pass; includes health check for service availability
