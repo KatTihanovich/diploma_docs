@@ -102,7 +102,8 @@ Creating a backend service for game-database interaction.
 
 ### Accessibility
 
-- Specific accessibility features: Keyboard navigation, tooltips for new players
+-	Keyboard navigation
+-	Tooltips for new players
 
 ### Reliability
 
