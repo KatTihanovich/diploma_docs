@@ -132,6 +132,3 @@ game_progress_db/
 
 ## References
 [Database migrations repository](https://github.com/KatTihanovich/game_progress_db)
-
-## References
-[Link to repository with database migrations](https://github.com/KatTihanovich/game_progress_db)
