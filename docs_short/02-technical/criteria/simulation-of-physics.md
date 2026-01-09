@@ -3,55 +3,53 @@
 ## Architecture Decision Record
 
 ### Status
-
-**Status:** Accepted 
-
+**Status:** Accepted  
 **Date:** 2026-01-06
 
 ### Context
+The project requires **interactive rope simulation** in Unity for gameplay mechanics:  
+- Player climbing  
+- Interacting with objects (e.g., buttons)  
+- Dynamic environmental challenges  
 
-The project requires simulation of interactive ropes (cloth-like physics) in Unity without relying on built-in colliders or cloth components.  
-
-Ropes serve as a **gameplay tool**, allowing the creation of various mechanics such as:  
-- player climbing,  
-- interacting with objects (e.g., triggering buttons),  
-- providing dynamic environmental challenges.  
-
-The ropes must respond to gravity, allow player interaction, and simulate swinging and damping behavior.  
-
-Simulation of liquid (water) was initially considered but **not implemented** due to high computational cost and its purely decorative purpose for this 2D game. Alternative simpler solutions exist for visual effects if needed.
+Ropes must respond to gravity, support player interaction, and simulate swinging/damping.  
+Liquid/water simulation was considered but **not implemented** due to high computational cost and decorative purpose.
 
 ### Decision
+- **Rope simulation** via Unity **Line Renderer** + custom physics  
+- Two rope types:  
+  1. Conditional-weight rope for triggering objects  
+  2. Climbable rope with collision response for realistic swinging/sliding  
+- Rope physics handle collisions and damping  
+- **Liquid simulation omitted** for performance reasons
 
-- Implemented **rope simulation** using Unity's **Line Renderer** combined with custom physics computations.  
-- Two ropes exist:  
-  1. Rope with a conditional weight, used to trigger button.  
-  2. Rope that the player can grab and climb, with collision response allowing realistic swinging and sliding around a character's body.  
-- Rope physics handle player collisions and damping.  
-- Water/liquid simulation is **omitted** to avoid unnecessary CPU/GPU load.
+---
 
 ### Alternatives Considered
 
 | Alternative | Pros | Cons | Why Not Chosen |
 |-------------|------|------|----------------|
-| Unity built-in colliders and physics | Easy to implement | Less control over rope behavior, less realistic swinging | Custom physics gives more control and climbing behavior |
-| Full 2D/3D fluid simulation (particles or SPH) | Realistic water physics, interactive waves | High CPU/GPU cost, complex | Not needed for decorative purposes; deferred for simplicity |
-| Monolithic rope script without Line Renderer | Simpler structure | Harder to visualize, less reusable | Line Renderer improves visual clarity and modularity |
+| Unity built-in colliders & physics | Easy implementation | Less control, weaker climbing/swinging | Custom physics provides better gameplay |
+| Full fluid simulation (particles/SPH) | Realistic interactive water | High CPU/GPU cost | Not needed for decoration |
+| Monolithic rope script without Line Renderer | Simpler code | Harder to visualize & reuse | Line Renderer improves clarity & modularity |
+
+---
 
 ### Consequences
 
-**Positive:**
-- Realistic rope behavior for gameplay interactions  
-- Player can climb, and grab ropes with objects
-- Visualized clearly with Line Renderer  
-- Lightweight computation suitable for 2D gameplay
+**Positive:**  
+- Realistic rope behavior for gameplay  
+- Player can climb and interact with objects  
+- Lightweight computation suitable for 2D gameplay  
 
-**Negative:**
-- Liquid/water simulation not implemented  
-- Rope physics simplified; may not handle extreme scenarios realistically
+**Negative:**  
+- No water simulation  
+- Rope physics simplified; may fail in extreme scenarios  
 
-**Neutral:**
-- Visual quality of rope depends on Line Renderer resolution; no effect on gameplay mechanics
+**Neutral:**  
+- Visual quality depends on Line Renderer resolution  
+
+---
 
 ## Implementation Details
 
@@ -65,23 +63,27 @@ Honey&Bunny/Assets/scripts/Diploma/Physics/LevelLogic/
 
 | Decision | Rationale |
 |----------|-----------|
-| Use of Line Renderer for rope | Provides visual clarity while keeping physics lightweight |
-| Custom physics for rope | Enables player interaction and climbing mechanics not possible with default Unity colliders |
-| Two separate rope types | Allows both interaction with objects and climbing without conflict |
-| Exclusion of water simulation | Avoids high computational cost; decorative element deemed unnecessary |
+| Line Renderer for ropes | Clear visualization, lightweight physics |
+| Custom rope physics | Enables climbing and interaction beyond Unity colliders |
+| Two rope types | Separates climbing and object interaction mechanics |
+| Water simulation omitted | Avoids high computational cost; not needed for gameplay |
+
+---
 
 ## Requirements Checklist
 
-| # | Requirement | Status | Evidence/Notes |
-|---|-------------|--------|----------------|
-| 1 | Rope simulation under gravity | ✅ | Rope responds to gravity and player interaction |
-| 2 | Player can grab/interact with rope | ✅ | Rope allows climbing and object triggering |
-| 3 | Rope oscillates and damps over time | ✅ | Custom physics simulates swinging and damping |
-| 4 | Liquid simulation (optional) | ❌ | Not implemented due to complexity and decorative purpose |
+| # | Requirement | Status | Notes |
+|---|-------------|--------|-------|
+| 1 | Rope simulation under gravity | ✅ | Responds to gravity & player interaction |
+| 2 | Player can grab/interact | ✅ | Climbing and object-triggering supported |
+| 3 | Rope oscillates & damps | ✅ | Swinging/damping simulated |
+| 4 | Liquid simulation (optional) | ❌ | Not implemented due to complexity |
+
+---
 
 ## Known Limitations
 
 | Limitation | Impact | Potential Solution |
-|------------|--------|-------------------|
-| No water simulation | Decorative liquid effects are not present | Implement particle-based or shader-based 2D fluid simulation if needed or use easer way to create 2D water effects |
-| Rope interaction animations are not yet implemented | Character remains visually static when using rope mechanics, reducing visual quality | Integrate rope-specific character animations once delivered by the animation team |
+|------------|--------|------------------|
+| No water simulation | Decorative liquid effects missing | Use particle/shader-based 2D fluids or simpler visual effects |
+| Rope interaction animations missing | Character appears static while climbing | Integrate rope-specific animations from animation team |
