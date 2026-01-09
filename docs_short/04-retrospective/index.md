@@ -1,4 +1,4 @@
-# Project Retrospective (Simplified Version)
+# Project Retrospective
 
 ## Successes ✅
 
