@@ -1,4 +1,4 @@
-# Problem Statement & Goals (Simplified Version)
+# Problem Statement & Goals
 
 ## Context
 
