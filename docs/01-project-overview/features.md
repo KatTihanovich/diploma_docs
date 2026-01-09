@@ -15,14 +15,14 @@
 ## User Stories
 
 # Epic 1: Game Core Development
-Development of basic game logic for game mechanics, and connection to a remote database, including FSM-based AI, simulation of ropes/vines, and user interface.
+Design and implementation of core gameplay logic, including agent behavior architecture, environmental mechanics, and client–server interaction via REST API.
 
 | ID        | User Story                                                                 | Acceptance Criteria                                                                                                                         | Priority  | Status |
 |-----------|----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-----------|--------|
 | US-E1-01  | As a player, I want to control my character's movement and interact with environmental objects, so that I can explore the game world, overcome obstacles, and complete challenges | - Character responds smoothly using implemented control keys to new mechanics <br>-Basic collision detection works correctly<br>- Control system works via implemented keys | Must  | ✅ |
 | US-E1-02  | As a player, I want to see my profile information, progress, and game status through an intuitive UI, so that I can track my advancement and make informed decisions | - Interface displays current player profile information (statistics, achievements) in real-time<br>- Progress indicators (level completion, collected items) update correctly<br>- Game status (health, energy, or similar metrics) is visible at all times<br>- UI is responsive and does not block gameplay controls<br>- Menus open/close correctly and buttons respond within ≤100 ms<br>- UI does not overlap critical game objects or obstruct visibility | Must  | ✅     |
 | US-E1-03  | As a player, I want realistic rope/vine physics, so that I can interact with swinging objects and obstacles naturally | - Ropes/vines respond to physics forces correctly<br>- Player can grab and tug ropes without glitches<br>- Collisions with ropes/vines behave realistically | Must  | ✅  |
-| US-E1-04  | As a developer, I want the game client to communicate with a remote PostgreSQL database via API, so that player progress and game data are saved and loaded correctly | - Game state is sent and retrieved through REST API<br>- Database stores player progress, scores, and settings<br>- API responds within ≤800 ms<br>- System handles failed requests gracefully | Must  | ✅ |
+| US-E1-04  | As a developer, I want to design and integrate a REST-based client–server communication layer, so that game state persistence is reliable, scalable, and decoupled from the client logic | - Game state is sent and retrieved through REST API<br>- Database stores player progress, scores, and settings<br>- API responds within ≤800 ms<br>- System handles failed requests gracefully | Must  | ✅ |
 
 
 # Epic 2: Autonomous Agents
@@ -86,7 +86,7 @@ Creating a backend service for game-database interaction.
 |---------------------|-------------------------------------|-----------------------------|
 | FPS                  | ≥45                                  | In Unity testing           |
 | UI response time     | ≤100 ms                              | Input & UI interaction tests|
-| API response time    | < 800 ms                             | Postman/manual API call     |
+| API response time    | < 800 ms when web is up                             | Postman/manual API call     |
 | Scene loading time   | ≤5 seconds                           | Manual test in Unity          |
 | Game save/load time  | ≤500 ms                              | Automated unit tests            |
 | Agent AI stability   | No deadlocks or infinite loops       | Playtesting  |
