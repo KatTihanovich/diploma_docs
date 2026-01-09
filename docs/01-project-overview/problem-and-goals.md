@@ -61,7 +61,7 @@ From a technical perspective, the development of custom components was necessary
 - [ ] Cross-platform compatibility: Correct operation on Windows and macOS without critical errors
 - [ ] Agent performance: FPS ≥45 with 4 agents running simultaneously on demo levels
 - [ ] Correct component integration: Successful operation of all modules without critical errors
-- [ ] Data saving/loading system response time: Average API response time ≤800 ms after initial launch
+- [ ] Data saving/loading system response time: Average API response time ≤800 ms after launch
 - [ ] Correct agent behaviour: ≥90% correct FSM/HFSM transitions
 - [ ] Accuracy of physical simulations: Correct rope and liquid simulation behaviour in ≥85% of test scenarios
 
