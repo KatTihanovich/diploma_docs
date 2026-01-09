@@ -65,13 +65,13 @@ game-progress-api/
 
 | # | Requirement               | Status | Evidence/Notes                                                                                          |
 | - | ------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| 1 | Automated build process   | ✅      | Maven compilation with JAR artifact generation CI_CD-Documentation-Tsikhanovich.docx​                   |
-| 2 | Code quality checks       | ✅      | Checkstyle for style, SonarCloud for static analysis CI_CD-Documentation-Tsikhanovich.docx​             |
-| 3 | Automated testing         | ✅      | Unit and integration test stages with H2 database CI_CD-Documentation-Tsikhanovich.docx​                |
-| 4 | Code coverage reporting   | ✅      | JaCoCo generates XML/HTML reports, integrated with SonarCloud CI_CD-Documentation-Tsikhanovich.docx​    |
-| 5 | Automated deployment      | ✅      | Render deployment with health checks on master branch CI_CD-Documentation-Tsikhanovich.docx​            |
-| 6 | Artifact management       | ✅      | JAR, test reports, and coverage reports stored in GitHub Actions CI_CD-Documentation-Tsikhanovich.docx​ |
-| 7 | Multi-environment support | ✅      | Dev (local), Test (CI), Production (Render) environments CI_CD-Documentation-Tsikhanovich.docx​         |
+| 1 | Automated build process   | ✅      | Maven compilation with JAR artifact generation            |
+| 2 | Code quality checks       | ✅      | Checkstyle for style, SonarCloud for static analysis           |
+| 3 | Automated testing         | ✅      | Unit and integration test stages with H2 database             |
+| 4 | Code coverage reporting   | ✅      | JaCoCo generates XML/HTML reports, integrated with SonarCloud     |
+| 5 | Automated deployment      | ✅      | Render deployment with health checks on master branch      |
+| 6 | Artifact management       | ✅      | JAR, test reports, and coverage reports stored in GitHub Actions |
+| 7 | Multi-environment support | ✅      | Dev (local), Test (CI), Production (Render) environments        |
 
 ## Justification of CI/CD Stages
 
