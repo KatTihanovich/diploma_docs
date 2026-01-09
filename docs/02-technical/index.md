@@ -80,7 +80,7 @@ This section covers the technical architecture, design decisions, and implementa
                                                  ▼
                                           [Response]
                                                  │
-[UI Update] ← [Game] ← [API Response] ←─────┘
+[UI Update] ← [Game] ← [API Response] ←──────────┘
 ```
 
 ## Key Technical Decisions
