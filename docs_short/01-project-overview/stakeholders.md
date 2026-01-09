@@ -1,4 +1,4 @@
-# Stakeholders & Users (Simplified Version)
+# Stakeholders & Users
 
 ## Target Audience
 
