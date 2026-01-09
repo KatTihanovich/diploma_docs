@@ -17,7 +17,7 @@
 | Backend Repository | https://github.com/KatTihanovich/game-progress-api |
 | API Docs | https://game-progress-api.onrender.com/swagger-ui/index.html#/ |
 | Database Repository | https://github.com/KatTihanovich/game_progress_db |
-| Game Repository | https://github.com/KatTihanovich/HoneyAndBunny |
+| Game Repository | https://github.com/KatTihanovich/Honey-Bunny-game |
 | Game Build | https://drive.google.com/drive/folders/1FcrTtvB9ld8SgPrPzfXIo3fRa0ILy2A4 |
 
 
