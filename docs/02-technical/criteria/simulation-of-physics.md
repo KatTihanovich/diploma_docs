@@ -84,3 +84,4 @@ Honey&Bunny/Assets/scripts/Diploma/Physics/LevelLogic/
 | Limitation | Impact | Potential Solution |
 |------------|--------|-------------------|
 | No water simulation | Decorative liquid effects are not present | Implement particle-based or shader-based 2D fluid simulation if needed or use easer way to create 2D water effects |
+| Rope interaction animations are not yet implemented | Character remains visually static when using rope mechanics, reducing visual quality | Integrate rope-specific character animations once delivered by the animation team |
