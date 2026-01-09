@@ -3,67 +3,54 @@
 ## Architecture Decision Record
 
 ### Status
-
-**Status:** Accepted
-
+**Status:** Accepted  
 **Date:** 2026-01-06
 
 ### Context
+Unity desktop game requires interaction with a database for player data (progress, achievements, game state). Challenges:
 
-The project is a **desktop game developed using Unity**, which needs to interact with a **database** to store and retrieve player-related data such as progress, game state, achievements, and other persistent information.
-
-The main problem to address is the need for **secure, reliable, and scalable communication between the desktop client and the database**.
-
-Key forces and constraints:
-
-* The client application must not have direct access to the database for security reasons.
-* Game rules and business logic should be centralized and controlled in one place.
-* The architecture should allow future extension (e.g., adding a mobile or web client).
-* Unity as a desktop client requires a standard and well-supported communication mechanism.
+* Client must not access database directly (security)  
+* Centralized business logic  
+* Future extension support (mobile/web clients)  
+* Unity requires standard communication mechanism  
 
 ### Decision
+Implement a **Game API** as backend:
 
-The chosen solution is to implement a **Game API** that acts as the **backend** and an intermediary layer between:
+* Acts as intermediary between Unity client and database  
+* Exposes HTTP endpoints consumed by Unity  
+* Processes business logic and handles all database operations  
+* Returns structured responses (JSON)  
 
-* the Unity desktop client, and
-* the database.
-
-The Game API:
-
-* exposes HTTP endpoints consumed by the Unity client;
-* processes requests according to the game’s business logic;
-* performs all database read/write operations;
-* returns structured responses (e.g., JSON) back to the client.
-
-The resulting architecture is:
-
-**Unity (Desktop Client) → Game API (Backend) → Database**
-
-This decision follows a classic **client–server architecture**, ensuring clear separation of responsibilities between layers.
+Architecture:  
+**Unity (Desktop Client) → Game API (Backend) → Database**  
+Classic client–server separation ensures clear responsibilities.
 
 ### Alternatives Considered
 
-| Alternative                          | Pros                                    | Cons                                                    | Why Not Chosen                                                 |
-| ------------------------------------ | --------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------- |
-| Direct database access from Unity    | Simple implementation, fewer components | Severe security risks, no access control, hard to scale | Exposing the database to the client is unsafe and unacceptable |
-| Using ready-made backend solutions | Fast setup, out-of-the-box functionality          | Limited flexibility, requires adaptation, often paid               | Custom Game API better matches project-specific requirements           |
-| No backend (local data storage only) | Fast prototyping, no server needed      | No data synchronization, no persistence across devices  | Does not meet project requirements                             |
+| Alternative | Pros | Cons | Why Not Chosen |
+|------------|------|------|----------------|
+| Direct DB access from Unity | Simple, fewer components | Security risks, no access control, poor scalability | Unsafe for production |
+| Ready-made backend solutions | Fast, prebuilt features | Limited flexibility, adaptation required, often paid | Custom API better fits requirements |
+| Local storage only | Fast prototype, no server | No data sync, no persistence across devices | Does not meet project requirements |
+
+---
 
 ### Consequences
 
-**Positive:**
+**Positive:**  
+- Isolated database improves security  
+- Centralized logic and validation  
+- Easier scalability and multi-client support  
 
-* Improved security by isolating the database from the client
-* Centralized business logic and validation
-* Easier scalability and support for multiple clients
+**Negative:**  
+- Increased system complexity  
+- Extra maintenance effort  
 
-**Negative:**
+**Neutral:**  
+- Requires network for data operations (guest mode possible without saving)
 
-* Increased system complexity
-* Additional effort required to maintain the backend
-
-**Neutral:**
-* Network connectivity is required for data-related operations or guest mode can be used(it does not save data)
+---
 
 ## Implementation Details
 
@@ -71,28 +58,32 @@ This decision follows a classic **client–server architecture**, ensuring clear
 
 | Decision | Rationale |
 |----------|-----------|
-| Use Java with Spring Boot for backend development | Spring Boot is a modern server-side framework that simplifies REST API development, provides built-in dependency injection, logging, and security, and aligns with industry best practices |
-| REST API communication over HTTPS | REST over HTTPS is a standard, secure, and Unity-compatible approach for reliable client–server communication |
-| Separation of client-side and server-side responsibilities | Game logic is handled by the Unity desktop client, while the backend manages data persistence, validation, and business logic |
-| Database interaction via Hibernate ORM | Hibernate abstracts direct SQL usage, improves maintainability, and enables object-oriented data access |
+| Java Spring Boot for backend | Simplifies REST API development, built-in DI, logging, security, industry standard |
+| REST API over HTTPS | Secure, Unity-compatible client–server communication |
+| Separation of client/server responsibilities | Unity handles game logic, backend handles persistence and business logic |
+| Hibernate ORM for DB access | Abstracts SQL, improves maintainability, OOP access to data |
+
+---
 
 ## Requirements Checklist
 
-| # | Requirement | Status | Evidence / Notes |
-|---|-------------|--------|------------------|
-| 1 | Use of a modern backend framework | ✅ | Backend implemented using Java Spring Boot |
-| 2 | Persistent data storage | ✅ | Relational database used for storing game and player state |
-| 3 | Use of ORM | ✅ | Hibernate ORM used for database access |
-| 4 | Multi-layered architecture | ✅ | Controllers, services, and data access layers implemented |
-| 5 | SOLID design principles | ✅ | Clear separation of responsibilities and dependency injection |
-| 6 | API interaction description | ✅ | REST endpoints documented (Swagger) |
-| 7 | Global error handling | ✅ | Centralized exception handling mechanism |
-| 8 | Logging | ✅ | Structured server-side logging implemented |
-| 9 | Production deployment | ✅ | Application deployed in a remote production environment |
-|10 | Automated test coverage (≥ 70%) | ✅ | Unit and integration tests implemented; coverage is more than 70%; there is CI/CD pipeline to run tests automatically |
+| # | Requirement | Status | Notes |
+|---|-------------|--------|-------|
+| 1 | Modern backend framework | ✅ | Java Spring Boot |
+| 2 | Persistent data storage | ✅ | Relational database |
+| 3 | ORM usage | ✅ | Hibernate |
+| 4 | Multi-layered architecture | ✅ | Controllers, services, DAO |
+| 5 | SOLID principles | ✅ | Clear separation, DI |
+| 6 | API interaction | ✅ | REST endpoints documented (Swagger) |
+| 7 | Global error handling | ✅ | Centralized exception mechanism |
+| 8 | Logging | ✅ | Structured server-side logs |
+| 9 | Production deployment | ✅ | Remote deployment |
+|10 | Automated tests ≥70% coverage | ✅ | Unit & integration tests; CI/CD runs tests automatically |
+
+---
 
 ## Known Limitations
 
 | Limitation | Impact | Potential Solution |
 |------------|--------|-------------------|
-| Limited offline functionality | In offline mode, gameplay is available but progress, achievements, and results are not saved | Implement local persistence with synchronization when connection is restored |
+| Limited offline functionality | Guest mode does not save progress or achievements | Add local persistence with later synchronization |
