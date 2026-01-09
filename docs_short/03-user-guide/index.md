@@ -1,4 +1,4 @@
-# User Guide (Simplified Version)
+# User Guide
 
 ## Contents
 
